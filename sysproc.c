@@ -12,6 +12,7 @@
 #include "fs.h"
 #include "file.h"
 
+
 int
 sys_fork(void)
 {
@@ -155,7 +156,30 @@ sys_usage(void)
   return 0;
 }
 
-int sys_load(void){
-  cprintf("Hello World.\n");
+struct {
+  struct spinlock lock;
+  struct proc proc[NPROC];
+} ptable;
+
+int sys_system_load(void){
+  struct proc *p;
+
+  struct system_info *c;
+  if (argptr(0, (char **) &c, sizeof(struct system_info)) < 0) return -1;
+  
+  acquire(&ptable.lock);
+
+  c->num_procs = 0;
+  c->uvm_used = 0;
+  c->num_cpus = ncpu;
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state != UNUSED){
+      c->num_procs += 1;
+      c->uvm_used += p->sz;
+    }
+  }
+
+  release(&ptable.lock);
   return 0;
 }
