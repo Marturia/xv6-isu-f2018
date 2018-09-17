@@ -154,3 +154,8 @@ sys_usage(void)
   
   return 0;
 }
+
+int sys_load(void){
+  cprintf("Hello World.\n");
+  return 0;
+}
