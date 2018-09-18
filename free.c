@@ -3,6 +3,13 @@
 
   Purpose:  Gets information about current processes, memory, and cpu number
 
+  Struct for system_info, defined in proc.h:
+  struct system_info {
+    int uvm_used;
+    int num_procs;
+    int num_cpus;
+  };
+
  */
 #include "types.h"
 #include "stat.h"
@@ -19,6 +26,8 @@
 int main(int argc, char *argv[]) {
   struct system_info c;
   system_load(&c);
+  
+  //Checks for '-h' option and then checks which memory value to convert to 
   if(strcmp(argv[1], "-h") == 0){
     printf(2,"#procs: %d", c.num_procs);
     if(c.uvm_used > (2*G)){

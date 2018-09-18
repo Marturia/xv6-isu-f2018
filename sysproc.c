@@ -156,23 +156,25 @@ sys_usage(void)
   return 0;
 }
 
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
 } ptable;
 
+//Function for system_load syscall
 int sys_system_load(void){
   struct proc *p;
 
   struct system_info *c;
-  if (argptr(0, (char **) &c, sizeof(struct system_info)) < 0) return -1;
+  if (argptr(0, (char **) &c, sizeof(struct system_info)) < 0) return -1; //Checks to make sure it's safe to proceed
   
-  acquire(&ptable.lock);
+  acquire(&ptable.lock); //Locks table to prevent changes while counting
 
   c->num_procs = 0;
   c->uvm_used = 0;
   c->num_cpus = ncpu;
-
+  //Counts number of processes that are in any state but unused
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state != UNUSED){
       c->num_procs += 1;
@@ -180,6 +182,6 @@ int sys_system_load(void){
     }
   }
 
-  release(&ptable.lock);
+  release(&ptable.lock); //Releases lock
   return 0;
 }

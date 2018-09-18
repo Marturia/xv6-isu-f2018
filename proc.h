@@ -55,7 +55,7 @@ struct proc {
 struct proc_usage {
   uint memory_size;
 };
-
+// Struct for system_info syscall
 struct system_info {
   int uvm_used;
   int num_procs;
